@@ -698,6 +698,7 @@ class DerivativesApi extends AbstractApi
             $headerParams['Accept'] = $_header_accept;
         }
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
+        $headerParams['x-ads-force'] = $this->apiClient->getSerializer()->toHeaderValue('true');
 
         // header params
         if ($accept_encoding !== null) {
