@@ -20,7 +20,7 @@
     "ext-curl": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "autodesk/core": "^1.0",
+    "oskmoz/autodesk-core": "^1.1",
     "salsify/json-streaming-parser":"^8.2"
   },
   "require-dev": {
