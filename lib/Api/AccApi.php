@@ -398,6 +398,12 @@ class AccApi extends AbstractApi
                 ]
             ];
         }
+        else {
+            $_tempBody = $query;
+        }
+
+
+        var_dump($query);
 
         // for model (json/xml)
         if (isset($_tempBody)) {
