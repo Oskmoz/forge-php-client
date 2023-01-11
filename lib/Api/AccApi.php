@@ -402,9 +402,6 @@ class AccApi extends AbstractApi
             $_tempBody = $query;
         }
 
-
-        var_dump($query);
-
         // for model (json/xml)
         if (isset($_tempBody)) {
             $httpBody = $_tempBody; // $_tempBody is the method argument, if present
