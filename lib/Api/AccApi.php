@@ -579,7 +579,9 @@ class AccApi extends AbstractApi
         // parse inputs
         $resourcePath = "/construction/index/v2/projects/{projectId}/indexes/{indexId}/queries/{queryId}/properties";
         $queryParams = [];
-        $headerParams = [];
+        $headerParams = [
+            'Accept-Encoding' => 'gzip'
+        ];
 
         // path params
         if ($projectId !== null) {
@@ -615,6 +617,8 @@ class AccApi extends AbstractApi
                 '\Autodesk\Forge\Client\Model\IndexQuery',
                 '/construction/index/v2/projects/{projectId}/indexes/{indexId}/queries/{queryId}/properties'
             );
+
+            $response = gzdecode($response);
 
             $separator = "\r\n";
             $line = strtok($response, $separator);
@@ -714,6 +718,99 @@ class AccApi extends AbstractApi
             switch ($e->getCode()) {
                 case 200:
                     $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Autodesk\Forge\Client\Model\IndexManifest', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+                case 409:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Autodesk\Forge\Client\Model\Reason', $e->getResponseHeaders());
+                    $e->setResponseObject($data);
+                    break;
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation getItemVersion
+     * 
+     * @throws \Autodesk\Forge\Client\ApiException on non-2xx response
+     */
+    public function getItemVersion($projectId, $itemId, int $versionNumber = null)
+    {
+        list($response) = $this->getItemVersionWithHttpInfo($projectId, $itemId, $versionNumber);
+        return $response;
+    }
+
+    /**
+     * Operation getItemVersionWithHttpInfo
+     *
+     * 
+     *
+     * @param string $projectId ACC Id of the project
+     * @param string $itemId ACC Id of the index
+     * @throws \Autodesk\Forge\Client\ApiException on non-2xx response
+     */
+    public function getItemVersionWithHttpInfo($projectId, $itemId, int $versionNumber = null)
+    {
+        // verify the required parameter 'projectId' is set
+        if ($projectId === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $projectId when calling projectId');
+        }
+        // verify the required parameter 'indexId' is set
+        if ($itemId === null) {
+            throw new \InvalidArgumentException('Missing the required parameter $itemId when calling indexId');
+        }
+        // parse inputs
+        $resourcePath = "/construction/index/v2/projects/{projectId}/items/{itemId}/versions";
+        $httpBody = '';
+        $queryParams = [];
+        $headerParams = [];
+
+        // path params
+        if ($projectId !== null) {
+            $resourcePath = str_replace(
+                "{" . "projectId" . "}",
+                $this->apiClient->getSerializer()->toPathValue($projectId),
+                $resourcePath
+            );
+        }
+
+        if ($itemId !== null) {
+            $resourcePath = str_replace(
+                "{" . "itemId" . "}",
+                $this->apiClient->getSerializer()->toPathValue($itemId),
+                $resourcePath
+            );
+        }
+
+        if(isset($versionNumber)) {
+            $queryParams['filter[versionNumber]'] = $versionNumber;
+        }
+
+        // make the API Call
+        try {
+            list($response, $statusCode, $httpHeader) = $this->callApi(
+                $resourcePath,
+                'GET',
+                $queryParams,
+                null,
+                $headerParams,
+                '\Autodesk\Forge\Client\Model\Index',
+                '/construction/index/v2/projects/{projectId}/items/{itemId}versions'
+            );
+
+            return [
+                
+                //TODO Destructurer result in classes
+                // $this->apiClient->getSerializer()->deserialize($response, '\Autodesk\Forge\Client\Model\Index', $httpHeader),
+                $response,
+                $statusCode,
+                $httpHeader,
+            ];
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = $this->apiClient->getSerializer()->deserialize($e->getResponseBody(), '\Autodesk\Forge\Client\Model\Index', $e->getResponseHeaders());
                     $e->setResponseObject($data);
                     break;
                 case 409:
